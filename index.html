@@ -251,26 +251,26 @@
 			<section id="contact" class="wrapper style2 fade-up">
 				<div class="inner">
 					<h2>Get in touch</h2>
-					<p>Phasellus convallis elit id ullamcorper pulvinar. Duis aliquam turpis mauris, eu ultricies erat malesuada quis. Aliquam dapibus, lacus eget hendrerit bibendum, urna est aliquam sem, sit amet imperdiet est velit quis lorem.</p>
+					<p>Join the revolution in AI game development and educational technology! Shape the future with us.</p>
 					<div class="split style3">
 						<section>
-							<form method="post" action="#">
+							<form method="dialog" id="contact-form">
 								<div class="fields">
 									<div class="field half">
 										<label for="name">Name</label>
-										<input type="text" name="name" id="name" />
+										<input type="text" name="name" id="user-name" />
 									</div>
 									<div class="field half">
 										<label for="email">Email</label>
-										<input type="text" name="email" id="email" />
+										<input type="text" name="email" id="user-email" />
 									</div>
 									<div class="field">
 										<label for="message">Message</label>
-										<textarea name="message" id="message" rows="5"></textarea>
+										<textarea name="message" id="user-message" rows="5" style="resize: none;"></textarea>
 									</div>
 								</div>
 								<ul class="actions">
-									<li><a href="" class="button submit">Send Message</a></li>
+									<button type="submit">Send Message</button>
 								</ul>
 							</form>
 						</section>
@@ -327,6 +327,56 @@
 		<script src="assets/js/breakpoints.min.js"></script>
 		<script src="assets/js/util.js"></script>
 		<script src="assets/js/main.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+		<script>
+			(function() {
+				emailjs.init("wD4lE3XT9j_5aDGMQ"); 
+				document.getElementById('contact-form').addEventListener('submit', function(event) {
+					var userName = document.getElementById('user-name');
+					var userEmail = document.getElementById('user-email');
+					var userMessage = document.getElementById('user-message');
+					userName.style.borderColor = null;
+					userEmail.style.borderColor = null;
+					userMessage.style.borderColor = null;
+					if (!userName.value) {
+						console.warn("Name is required");
+						userName.style.borderColor = "red";
+						return;
+					}
+					if (!userEmail.value) {
+						console.warn("Email is required");
+						userEmail.style.borderColor = "red";
+						return;
+					} else {
+						var EMAIL_REGEXP = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
+						if (!EMAIL_REGEXP.test(userEmail.value)) {
+							console.warn("Email is incorrect");
+							userEmail.style.borderColor = "red";
+							return;
+						}
+					}
+					if (!userMessage.value) {
+						console.warn("Message text is required");
+						userMessage.style.borderColor = "red";
+						return;
+					}
+
+					event.preventDefault();
+					emailjs.send("email_service_ai11", "template_default", {
+						from_name: userName.value,
+						reply_to: userEmail.value,
+						message: userMessage.value
+					}).then(function(response) {
+						console.info("Message sent. Thanks.");
+						userName.value = "";
+						userEmail.value = "";
+						userMessage.value = "";
+					}, function(error) {
+						console.error("Sending error: " + JSON.stringify(error));
+					});
+				});
+			})();
+		</script>
 
 	</body>
 </html>
